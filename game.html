@@ -18,7 +18,7 @@
 
 <script>
   var log = console.log.bind(this)
-
+  var fps = 60;
   var imageFromPath = function (path) {
     var img = new Image()
     img.src = path
@@ -32,16 +32,25 @@
       x: 100,
       y: 250,
       speed: 15,
+      move: function (x) {
+        if(x <0) {
+          x = 0
+        }
+        if(x > 400 - this.image.width) {
+          x = 400 - this.image.width
+        }
+        this.x = x
+      },
       moveLeft: function () {
-        this.x -= this.speed
+        this.move(this.x - this.speed)
       },
       moveRight: function () {
-        this.x += this.speed
+        this.move(this.x + this.speed)
       },
       collide: function (ball) {
         if (ball.y + ball.height > o.y) {
           if (ball.x > o.x && ball.x < o.x + o.image.width) {
-            log('true')
+            // log('true')
             return true
           }
         }
@@ -61,8 +70,8 @@
       image: image,
       x: 100,
       y: 200,
-      speedX: 10,
-      speedY: 10,
+      speedX: 5,
+      speedY: 5,
       fired: false,
       fire: function () {
         this.fired = true
@@ -80,7 +89,40 @@
           this.y += this.speedY
         }
       },
+      revert: function () {
+        this.speedY *= -1
+      },
+    }
+    return o
+  }
 
+  var rectIntersects = function (a, b) {
+    var o = a
+    if (b.y > o.y && b.y < o.y + o.image.height) {
+      if (b.x > o.x && b.x < o.x + o.image.width) {
+        return true
+      }
+    }
+    return false
+  }
+
+  var Block = function () {
+    var image = imageFromPath('block.png')
+    image.onload = function () {
+      o.w = this.width
+      o.h = this.height
+    }
+    var o = {
+      image: image,
+      x: 100,
+      y: 100,
+      alive: true,
+      kill: function () {
+        o.alive = false
+      },
+      collide: function (b) {
+        return this.alive && (rectIntersects(o, b) || rectIntersects(b, o));
+      },
     }
     return o
   }
@@ -126,16 +168,23 @@
 
       //draw
       g.draw()
-    }, 1000 / 30)
+    }, 1000 / fps)
 
     return g
   }
 
   var __main = function () {
-
+    var paused = false
     var game = Game()
     var paddle = Paddle();
     var ball = Ball();
+    var blocks = [];
+    for (var i = 0; i < 3; i++) {
+      var b = Block()
+      b.x = i*100
+      b.y = 50
+      blocks.push(b)
+    }
 
     game.registerAction('a', function () {
       paddle.moveLeft()
@@ -146,16 +195,41 @@
     game.registerAction('f', function () {
       ball.fire()
     })
-    game.update = function () {
-      ball.move()
-      //判断相撞
-      if (paddle.collide(ball)) {
-        ball.speedY *= -1
+    window.addEventListener('keydown', function (e) {
+      if(e.key === 'p'){
+        paused = !paused
       }
+    })
+
+    game.update = function () {
+      if(paused) {
+        return
+      }
+      ball.move()
+      //判断paddle相撞
+      if (paddle.collide(ball)) {
+        ball.revert()
+      }
+
+      //判断blocks相撞
+      blocks.forEach(block => {
+        if (block.collide(ball)) {
+          // log('collide')
+          ball.revert()
+          block.kill()
+        }
+      })
+
     }
+
     game.draw = function () {
       game.drawImage(paddle)
       game.drawImage(ball)
+      blocks.forEach(block => {
+        if (block.alive) {
+          game.drawImage(block)
+        }
+      })
     }
   }
 
