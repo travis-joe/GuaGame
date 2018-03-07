@@ -3,7 +3,7 @@
  * File description:
  */
 var log = console.log.bind(this)
-var fps = 60;
+window.fps = 60
 var imageFromPath = function (path) {
   var img = new Image()
   img.src = path

@@ -2,7 +2,7 @@
  * Created by qzy on 2018/3/5.
  * File description:
  */
-var Game = function (fps) {
+var Game = function () {
   var g = {
     actions: {},
     keydowns: {},
@@ -27,7 +27,7 @@ var Game = function (fps) {
     g.actions[key] = callback
   }
 
-  window.fps = 30
+
 
   var runloop = function () {
 
@@ -54,7 +54,7 @@ var Game = function (fps) {
   //timer
   setTimeout(function () {
     runloop()
-  }, 1000 / fps)
+  }, 1000 / window.fps)
 
   return g
 }
