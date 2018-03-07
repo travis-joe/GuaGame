@@ -26,8 +26,11 @@ var Game = function (fps) {
   g.registerAction = function (key, callback) {
     g.actions[key] = callback
   }
-  //timer
-  setInterval(function () {
+
+  window.fps = 30
+
+  var runloop = function () {
+
     //events
     for (let key in g.actions) {
       if (g.keydowns[key]) {
@@ -43,6 +46,14 @@ var Game = function (fps) {
 
     //draw
     g.draw()
+
+    setTimeout(function () {
+      runloop()
+    }, 1000 / window.fps)
+  }
+  //timer
+  setTimeout(function () {
+    runloop()
   }, 1000 / fps)
 
   return g
