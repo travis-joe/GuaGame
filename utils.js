@@ -2,7 +2,12 @@
  * Created by qzy on 2018/3/5.
  * File description:
  */
-var log = console.log.bind(this)
+const e = sel => document.querySelector(sel)
+
+const log = s => {
+  e('#id-text-log').value += '\n' + s
+}
+
 window.fps = 60
 var imageFromPath = function (path) {
   var img = new Image()
