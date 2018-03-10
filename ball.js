@@ -2,14 +2,12 @@
  * Created by qzy on 2018/3/5.
  * File description:
  */
-var Ball = function () {
-  var image = imageFromPath('ball.png')
-  image.onload = function () {
-    o.width = this.width
-    o.height = this.height
-  }
+var Ball = function (game) {
+  var image = game.imageByName('ball')
   var o = {
-    image: image,
+    width: image.w,
+    height: image.h,
+    image: image.image,
     x: 100,
     y: 200,
     speedX: 5,

@@ -2,10 +2,12 @@
  * Created by qzy on 2018/3/5.
  * File description:
  */
-var Paddle = function () {
-  var image = imageFromPath('paddle.png')
+var Paddle = function (game) {
+  var image = game.imageByName('paddle');
   var o = {
-    image: image,
+    image: image.image,
+    width: image.w,
+    height: image.h,
     x: 100,
     y: 250,
     speed: 15,

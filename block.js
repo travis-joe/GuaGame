@@ -2,13 +2,13 @@
  * Created by qzy on 2018/3/5.
  * File description:
  */
-var Block = function (position) {
-  var image = imageFromPath('block.png')
+var Block = function (game, position) {
+  var image = game.imageByName('block')
   var p = position
   var o = {
-    image: image,
-    w:image.width,
-    h:image.height,
+    image: image.image,
+    width:image.w,
+    height:image.h,
     x: p[0],
     y: p[1],
     alive: true,
