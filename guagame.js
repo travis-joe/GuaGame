@@ -2,12 +2,13 @@
  * Created by qzy on 2018/3/5.
  * File description:
  */
-var Game = function (images, runCallback) {
+var Game = function (images, callback) {
   //loads is a dict width pics names
   var g = {
+    scene: null,
     actions: {},
     keydowns: {},
-    images:{},
+    images: {},
   }
   var canvas = document.querySelector('#id-canvas')
   var context = canvas.getContext('2d')
@@ -24,6 +25,13 @@ var Game = function (images, runCallback) {
   window.addEventListener('keyup', function (event) {
     g.keydowns[event.key] = false
   })
+
+  g.update = function () {
+    g.scene.update && g.scene.update()
+  }
+  g.draw = function () {
+    g.scene.draw()
+  }
   //register
   g.registerAction = function (key, callback) {
     g.actions[key] = callback
@@ -38,7 +46,7 @@ var Game = function (images, runCallback) {
     }
 
     //update
-    g.update()
+    g.update && g.update()
 
     //clear
     g.context.clearRect(0, 0, canvas.width, canvas.height)
@@ -65,11 +73,10 @@ var Game = function (images, runCallback) {
       loads.push(1)
       if (loads.length === names.length) {
         console.log(g.images)
-        g.run()
+        g.__start()
       }
     }
   })
-
 
   g.imageByName = function (name) {
     var img = g.images[name]
@@ -80,15 +87,19 @@ var Game = function (images, runCallback) {
     };
     return image
   }
-  g.run = function() {
-    runCallback(g)
+  g.runWithScene = function (scene) {
+    g.scene = scene
     // 开始运行程序
-    setTimeout(function(){
+    setTimeout(function () {
       runloop()
-    }, 1000/fps)
+    }, 1000 / fps)
   }
-
-
+  g.replaceScene = function (scene) {
+    g.scene = scene;
+  }
+  g.__start = function () {
+    callback(g)
+  }
 
   return g
 }
