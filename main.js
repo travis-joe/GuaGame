@@ -82,8 +82,33 @@ var __main = function () {
       })
 
     }
+    var enableDrag = false
+    game.canvas.addEventListener('mousedown', event => {
+      const x = event.offsetX
+      const y = event.offsetY
 
+      if(ball.hasPoint(x, y)) {
+        enableDrag = true
+      }
+    })
+    game.canvas.addEventListener('mousemove', event => {
+      const x = event.offsetX
+      const y = event.offsetY
+      if(enableDrag) {
+        ball.x = x
+        ball.y = y
+      }
+    })
+    game.canvas.addEventListener('mouseup', event => {
+      const x = event.offsetX
+      const y = event.offsetY
+
+      enableDrag = false
+    })
     game.draw = function () {
+      //draw background
+      game.context.fillStyle = "gray"
+      game.context.fillRect(0,0, 400, 300)
       // draw
       game.drawImage(paddle)
       game.drawImage(ball)
@@ -98,6 +123,7 @@ var __main = function () {
     }
   })
   enableDebugMode(game, true)
+
 
 }
 
