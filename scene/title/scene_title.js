@@ -16,5 +16,4 @@ class SceneTitle extends GuaScene {
     this.game.context.fillText("开始游戏 press k", 100 ,100)
   }
 
-
 }
